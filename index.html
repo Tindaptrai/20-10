@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>20/10 – Lời cảm ơn & lời chúc</title>
+  <meta name="theme-color" content="#f7cfe1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg1:#fff5f8;--acc:#ff6fa9;--ink:#3c2337;--muted:#6b4b5d}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Poppins,sans-serif;color:var(--ink);background:linear-gradient(180deg,var(--bg1),#fff);min-height:100vh;display:flex;flex-direction:column;align-items:center;text-align:center;padding:1rem;overflow-x:hidden;position:relative}
+    h1{font-size:clamp(34px,4.5vw,50px);margin:.25rem 0 0.9rem;color:var(--acc)}
+    p{max-width:820px;line-height:1.95;font-size:clamp(19px,2.5vw,22px)}
+
+    /* Button under signature */
+    .btn{appearance:none;border:none;background:var(--acc);color:#fff;padding:20px 34px;border-radius:20px;cursor:pointer;font-weight:800;letter-spacing:.2px;box-shadow:0 10px 28px #ff6fa94a;transition:transform .08s ease;font-size:clamp(22px,2.8vw,26px);margin-top:1.5rem;z-index:9999}
+    .btn:hover{transform:scale(1.05)}
+    .btn.hidden{visibility:hidden}
+
+    footer{margin-top:auto;color:var(--muted);font-size:14px;padding:10px 0;position:fixed;bottom:0;left:0;right:0;text-align:center}
+
+    /* petals */
+    .petal{position:fixed;top:-10vh;left:0;pointer-events:none;opacity:.85}
+    @keyframes fall{to{transform:translate3d(var(--x,0),110vh,0) rotate(var(--r,0deg));opacity:.98}}
+
+    /* Overlay + big popup (modal) */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.28);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:30}
+    .overlay.show{opacity:1;pointer-events:auto}
+    .pop{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.98);min-width:min(560px,92vw);max-width:92vw;background:#fff;border:1px solid #ffe2ee;border-radius:22px;box-shadow:0 22px 60px rgba(0,0,0,.18);padding:22px 22px 26px;opacity:0;transition:opacity .25s ease, transform .25s ease;z-index:40;text-align:left}
+    .overlay.show .pop{opacity:1;transform:translate(-50%,-50%) scale(1)}
+    .pop h3{margin:0 0 10px;color:var(--acc);font-size:clamp(22px,3vw,26px)}
+    .pop p{margin:0;font-size:clamp(18px,2.4vw,20px);line-height:1.85}
+    .pop .close{position:absolute;right:12px;top:10px;background:transparent;border:none;font-size:26px;cursor:pointer;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <h1>Chúc mừng 20/10 🌸</h1>
+  <p>Cảm ơn vì bạn đã luôn <strong>mạnh mẽ</strong>, <strong>xinh đẹp</strong> và <strong>truyền cảm hứng</strong> cho những người xung quanh.<br>Chúc bạn một ngày 20/10 thật rực rỡ và tràn đầy yêu thương 💖</p>
+  <p style="font-size:clamp(19px,2.6vw,22px)"><em>— Nguyễn Lê Trọng Tín —</em></p>
+  <button class="btn" id="btnConfetti"> Nhấp vào đi.</button>
+
+  <footer>Made with ❤ for 20/10</footer>
+
+  <!-- Overlay + Popup -->
+  <div id="overlay" class="overlay" aria-hidden="true">
+    <div id="pop" class="pop" role="dialog" aria-live="polite" aria-label="Thông điệp 20/10">
+      <button class="close" aria-label="Đóng">×</button>
+      <h3>Gửi bạn lời yêu thương 💐</h3>
+      <p>Cảm ơn bạn đã luôn toả sáng và mang điều tốt đẹp đến mọi người. Chúc bạn hôm nay và mỗi ngày càng xinh đẹp và đều được trân trọng! ✨</p>
+    </div>
+  </div>
+
+  <!-- Hidden YouTube Player -->
+  <div id="ytContainer" style="position:fixed;width:0;height:0;overflow:hidden;pointer-events:none"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',()=>{
+      // Confetti
+      const confetti=()=>{const c=100;for(let i=0;i<c;i++){const e=document.createElement('div');const s=8+Math.random()*10;e.style.width=e.style.height=s+'px';e.style.position='fixed';e.style.left=(Math.random()*100)+'vw';e.style.top='-10vh';e.style.background=['#ff6fa9','#ffd3e7','#fff','#ffc2dc'][Math.floor(Math.random()*4)];e.style.borderRadius=Math.random()>.5?'50%':'8px';e.style.opacity=.9;e.style.transition=`transform ${2+Math.random()*2}s ease-out`;e.style.pointerEvents='none';document.body.appendChild(e);setTimeout(()=>{e.style.transform=`translate(${(Math.random()*60-30)}vw,110vh)`;},10);setTimeout(()=>e.remove(),4300);}};
+
+      // Petals
+      const createPetal=()=>{const p=document.createElement('div');p.className='petal';const size=18+Math.random()*20;p.style.width=size+'px';p.style.height=size*.66+'px';p.style.background='radial-gradient(circle at 30% 30%,#fff,#ffd4e6 60%)';p.style.borderRadius='60% 40% 60% 40%/60% 60% 40% 40%';const startX=Math.random()*100;const drift=(Math.random()*60-30);p.style.left=startX+'vw';p.style.animation=`fall ${6+Math.random()*5}s linear forwards`;p.style.setProperty('--x',drift+'vw');p.style.setProperty('--r',(Math.random()*360)+'deg');document.body.appendChild(p);setTimeout(()=>p.remove(),12000)};setInterval(()=>createPetal(),450);
+
+      // YouTube music from 3:10 to 4:00
+      const START=190, END=240; // seconds
+      const YT_VIDEO_ID='Ta1aWgm6Fd8';
+      let ytPlayer, ytReady=false, guard=null, playing=false;
+
+      // Load YT API
+      const tag=document.createElement('script');tag.src='https://www.youtube.com/iframe_api';document.body.appendChild(tag);
+      window.onYouTubeIframeAPIReady=function(){
+        try{
+          ytPlayer=new YT.Player('ytContainer',{
+            width:'0',height:'0',videoId:YT_VIDEO_ID,
+            playerVars:{start:START,end:END,controls:0,loop:0,playlist:YT_VIDEO_ID},
+            events:{onReady:()=>{ytReady=true;},onStateChange:(e)=>{if(e.data===YT.PlayerState.ENDED){stopPlayback();}}}
+          });
+        }catch(err){ console.error('YT init error', err); }
+      }
+
+      function startGuard(){ if(guard) clearInterval(guard); guard=setInterval(()=>{ try{ const t=ytPlayer && ytPlayer.getCurrentTime ? ytPlayer.getCurrentTime() : null; if(typeof t==='number' && t>=END-0.05){ stopPlayback(); } }catch(e){ /* ignore */ } },200); }
+
+      // Overlay helpers
+      const overlay=document.getElementById('overlay');
+      const btn=document.getElementById('btnConfetti');
+      const closeBtn=document.querySelector('.pop .close');
+
+      function openOverlay(){ overlay.classList.add('show'); overlay.setAttribute('aria-hidden','false'); btn.classList.add('hidden'); }
+      function closeOverlay(){ overlay.classList.remove('show'); overlay.setAttribute('aria-hidden','true'); btn.classList.remove('hidden'); }
+
+      function startPlayback(){
+        try{ confetti(); }catch(_){}
+        openOverlay();
+        if(ytReady && !playing){
+          try{ ytPlayer.seekTo(START,true); ytPlayer.playVideo(); ytPlayer.unMute(); playing=true; startGuard(); }catch(err){ console.error('play error', err); }
+        }
+      }
+      function stopPlayback(){
+        try{ ytPlayer && ytPlayer.pauseVideo && ytPlayer.pauseVideo(); }catch(_){}
+        playing=false; if(guard) clearInterval(guard);
+        closeOverlay();
+      }
+
+      if(btn){ btn.addEventListener('click', startPlayback); }
+      if(closeBtn){ closeBtn.addEventListener('click', stopPlayback); }
+
+      setTimeout(()=>{ try{confetti();}catch(_){} },900);
+    });
+  </script>
+</body>
+</html>
